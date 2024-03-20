@@ -48,7 +48,7 @@ export const removeJWT = () => {
 };
 
 export const checkIfUserVoted = (game, userId) => {
-	return game.users_permissions_users.find((user) => user.id === userId);
+	return game.users.find((user) => user.id === userId);
 };
 
 export const vote = async (gameId, jwt, usersArray) => {

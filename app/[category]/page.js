@@ -1,9 +1,15 @@
-import { CardsList } from '../components/CardsList/CardsList';
+'use client';
+import { CardsListSection } from '../components/CardsListSection/CardsListSection';
 import { Promo } from '../components/Promo/Promo';
-import { getGamesDataByCategory } from '../api/data-utils';
+import { isDataOk } from '../api/utils';
+import { useGetGamesByCategory } from '../api/hooks';
+import { useEffect, useState } from 'react';
+import { CategoryNotFound } from '../components/GameNotFound/CategoryNotFound';
+import { Preloader } from '@/app/components/Preloader/Preloader';
 
-export default async function CategoryPage(props) {
+export default function CategoryPage(props) {
 	const params = props.params;
+	//console.log(params);
 	const titles = {
 		new: 'Новинки',
 		popular: 'Популярные',
@@ -12,11 +18,29 @@ export default async function CategoryPage(props) {
 		TDS: 'TDS',
 		runner: 'Раннеры'
 	};
-	const games = await getGamesDataByCategory(params.category);
-	return (
-		<main>
-			<CardsList id={params.category} title={titles[params.category]} data={games} />
-			<Promo />
-		</main>
-	);
+	const games = useGetGamesByCategory(params.category, []);
+	//console.log('games', games, isDataOk(games));
+	if (isDataOk(games)) {
+		return (
+			<main>
+				<CardsListSection id={params.category} title={titles[params.category]} data={games} />
+				<Promo />
+			</main>
+		);
+	} else if (games == null) {
+		return (
+			<main>
+				<Preloader />
+				<Promo />
+			</main>
+		);
+	} else {
+		console.log(games);
+		return (
+			<main>
+				<CategoryNotFound />
+				<Promo />
+			</main>
+		);
+	}
 }

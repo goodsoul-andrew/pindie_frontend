@@ -2,6 +2,10 @@ export const isResponseOk = (response) => {
 	return !(response instanceof Error);
 };
 
+export const isDataOk = (data) => {
+	return !(data instanceof Error || data === null || data.length === 0);
+};
+
 export const getData = async (url) => {
 	try {
 		const response = await fetch(url);

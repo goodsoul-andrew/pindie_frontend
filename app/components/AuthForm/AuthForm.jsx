@@ -1,12 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { usePindieStore } from '@/app/store/app-store';
 import Styles from './AuthForm.module.css';
-import { authorize, setJWT } from '@/app/api/users-utils';
+import { authorize } from '@/app/api/users-utils';
 import { isResponseOk } from '@/app/api/utils';
 
 export const AuthForm = (props) => {
 	const [authData, setAuthData] = useState({ identifier: '', password: '' });
-	const [userData, setUserData] = useState(null);
+	const authContext = usePindieStore();
+	//const [userData, setUserData] = useState(null);
 	const [message, setMessage] = useState({ status: null, text: null });
 	const handleInput = (e) => {
 		const newAuthData = authData;
@@ -14,30 +16,27 @@ export const AuthForm = (props) => {
 		newAuthData[e.target.name] = e.target.value;
 		setAuthData(newAuthData);
 	};
+	
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		//console.log(authData);
 		const userData = await authorize(authData);
-		//console.log(userData);
 		if (isResponseOk(userData)) {
-			setUserData(userData);
-			props.setAuth(true);
-			setJWT(userData.jwt);
+			authContext.login(userData.user, userData.jwt); // login из контекста
 			setMessage({ status: 'success', text: 'Вы авторизовались!' });
 		} else {
 			setMessage({ status: 'error', text: 'Неверные почта или пароль' });
 		}
-		//console.log(message);
-	};
+	}; 
+
 	useEffect(() => {
 		let timer;
-		if (userData) {
+		if (authContext.user) {
 			timer = setTimeout(() => {
 				props.closeFunction();
 			}, 1000);
 		}
 		return () => clearTimeout(timer);
-	}, [userData]);
+	}, [authContext.user]);
 	return (
 		<form className={Styles['form']} onSubmit={handleSubmit}>
 			<h2 className={Styles['form__title']}>Авторизация</h2>

@@ -1,6 +1,6 @@
-import { CardsList } from '@/app/components/CardsList/CardsList';
+import { CardsList } from '@/app/components/CardsListSection/CardsList';
 import { Promo } from '@/app/components/Promo/Promo';
-import { getAllGamesData } from '@/app/api/data-utils';
+import { getGamesByCategoryData } from '@/app/api/data-utils';
 
 export default async function AllGamesPage(props) {
 	const params = props.params;
@@ -12,7 +12,7 @@ export default async function AllGamesPage(props) {
 		TDS: 'TDS',
 		runner: 'Раннеры'
 	};
-	const games = await getAllGamesData();
+	const games = await getGamesByCategoryData();
 	return (
 		<main>
 			<CardsList id={params.category} title='Все игры' data={games} />

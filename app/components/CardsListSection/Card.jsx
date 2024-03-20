@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 export const Card = (props) => {
   return (
-		<li className={Styles.cards__list__item} key={props.id}>
 			<Link href={`/games/${props.id}`} className={Styles['card__list__link']}>
 				<article className={Styles.card}>
 					<img src={props.image} alt='' className={Styles.card__image} />
@@ -16,12 +15,11 @@ export const Card = (props) => {
 								Автор: <span className={Styles.card__accent}>{props.developer}</span>
 							</p>
 							<p className={Styles.card__votes}>
-								Голосов на сайте: <span className={Styles.card__accent}>{props.users_permissions_users.length}</span>
+								Голосов на сайте: <span className={Styles.card__accent}>{props.users.length}</span>
 							</p>
 						</div>
 					</div>
 				</article>
 			</Link>
-		</li>
 	);
 }
