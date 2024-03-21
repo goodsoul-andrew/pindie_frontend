@@ -14,9 +14,9 @@ export const App = (props) => {
 
 	return (
 		<>
-			<Header />
+			<Header id='header' />
 			{props.children}
-			<Footer />
+			<Footer id='footer' />
 		</>
 	);
 };

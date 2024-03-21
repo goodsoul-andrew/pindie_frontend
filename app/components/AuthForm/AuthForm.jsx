@@ -2,31 +2,89 @@
 import { useState, useEffect } from 'react';
 import { usePindieStore } from '@/app/store/app-store';
 import Styles from './AuthForm.module.css';
-import { authorize } from '@/app/api/users-utils';
+import { authorize, register } from '@/app/api/users-utils';
 import { isResponseOk } from '@/app/api/utils';
+// Есть регистрация!
 
 export const AuthForm = (props) => {
 	const [authData, setAuthData] = useState({ identifier: '', password: '' });
+	const [registerData, setRegisterData] = useState({ identifier: '', password: '', username: "", password_control: "" }); // email это identifier
 	const authContext = usePindieStore();
 	//const [userData, setUserData] = useState(null);
 	const [message, setMessage] = useState({ status: null, text: null });
-	const handleInput = (e) => {
+	const [actionType, setActionType] = useState("login");
+	const titleLabels = { login: 'Авторизация', register: 'Регистрация' };
+	const actionLabels = { login: 'Войти', register: 'Зарегистрироваться' };
+	const [formTitle, setFormTitle] = useState(titleLabels[actionType]);
+
+	const handleAuthInput = (e) => {
 		const newAuthData = authData;
 		//console.log("auth", e.target.name, e.target.value);
 		newAuthData[e.target.name] = e.target.value;
 		setAuthData(newAuthData);
 	};
+
+	const handleRegisterInput = (e) => {
+		const newRegisterData = registerData;
+		//console.log("auth", e.target.name, e.target.value);
+		newRegisterData[e.target.name] = e.target.value;
+		setAuthData(newRegisterData);
+	};
+
+
+	const handleTitleMouseEnter = (e) => {
+		if (actionType === "login") {
+			setFormTitle(titleLabels["register"]);
+		}
+		else {
+			setFormTitle(titleLabels["login"]);
+		}
+	}
 	
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const userData = await authorize(authData);
-		if (isResponseOk(userData)) {
-			authContext.login(userData.user, userData.jwt); // login из контекста
-			setMessage({ status: 'success', text: 'Вы авторизовались!' });
-		} else {
-			setMessage({ status: 'error', text: 'Неверные почта или пароль' });
+		if (actionType === "login") {
+			const userData = await authorize({identifier: authData.identifier, password: authData.password});
+			if (isResponseOk(userData)) {
+				authContext.login(userData.user, userData.jwt); // login из контекста
+				setMessage({ status: 'success', text: 'Вы авторизовались!' });
+			} else {
+				setMessage({ status: 'error', text: 'Неверные почта или пароль' });
+			}
+		}
+		else {
+			if (registerData.password === registerData.password_control) {
+				const registerResponse = await register({email: registerData.identifier, username: registerData.username, password: registerData.password})
+				if (isResponseOk(registerResponse)) {
+					const userData = await authorize({ identifier: authData.identifier, password: authData.password });
+					if (isResponseOk(userData)) {
+						authContext.login(userData.user, userData.jwt); // login из контекста
+						setMessage({ status: 'success', text: 'Вы зарегистрировались и авторизовались!' });
+						setActionType("login");
+					} else {
+						setMessage({ status: 'error', text: 'Неверные почта или имя пользователя' });
+					}
+				}
+				else {
+					console.log(registerResponse);
+					setMessage({ status: 'error', text: 'Неверные почта или имя пользователя' });
+				}
+			}
+			else {
+				setMessage({ status: 'error', text: 'Пароли не совпадают' });
+			}
 		}
 	}; 
+
+	const handleActionTypeButton = (e) => {
+		e.preventDefault();
+		if (actionType === "login") {
+			setActionType("register");
+		}
+		else {
+			setActionType("login");
+		}
+	}
 
 	useEffect(() => {
 		let timer;
@@ -37,9 +95,20 @@ export const AuthForm = (props) => {
 		}
 		return () => clearTimeout(timer);
 	}, [authContext.user]);
+
 	return (
 		<form className={Styles['form']} onSubmit={handleSubmit}>
-			<h2 className={Styles['form__title']}>Авторизация</h2>
+			<button
+				className={Styles['form__title']}
+				type='button'
+				onClick={handleActionTypeButton}
+				onMouseEnter={handleTitleMouseEnter}
+				onMouseLeave={() => {
+					setFormTitle(titleLabels[actionType]);
+				}}
+			>
+				{formTitle}
+			</button>
 			<div className={Styles['form__fields']}>
 				<label className={Styles['form__field']}>
 					<span className={Styles['form__field-title']}>Email</span>
@@ -48,9 +117,21 @@ export const AuthForm = (props) => {
 						type='email'
 						name='identifier'
 						placeholder='hello@world.com'
-						onInput={handleInput}
+						onInput={(handleAuthInput, handleRegisterInput)}
 					/>
 				</label>
+				{actionType === 'register' ? (
+					<label className={Styles['form__field']}>
+						<span className={Styles['form__field-title']}>Имя пользователя</span>
+						<input
+							className={Styles['form__field-input']}
+							type='username'
+							placeholder='any_username'
+							name='username'
+							onInput={handleRegisterInput}
+						/>
+					</label>
+				) : null}
 				<label className={Styles['form__field']}>
 					<span className={Styles['form__field-title']}>Пароль</span>
 					<input
@@ -58,9 +139,21 @@ export const AuthForm = (props) => {
 						type='password'
 						placeholder='***********'
 						name='password'
-						onInput={handleInput}
+						onInput={(handleAuthInput, handleRegisterInput)}
 					/>
 				</label>
+				{actionType === 'register' ? (
+					<label className={Styles['form__field']}>
+						<span className={Styles['form__field-title']}>Пароль ещё раз</span>
+						<input
+							className={Styles['form__field-input']}
+							type='password'
+							placeholder='***********'
+							name='password_control'
+							onInput={handleRegisterInput}
+						/>
+					</label>
+				) : null}
 			</div>
 			{message.status && <p className={Styles[`form__message__${message.status}`]}>{message.text}</p>}
 			<div className={Styles['form__actions']}>
@@ -68,7 +161,7 @@ export const AuthForm = (props) => {
 					Очистить
 				</button>
 				<button className={Styles['form__submit']} type='submit'>
-					Войти
+					{actionType === 'login' ? 'Войти' : 'Зарегистрироваться'}
 				</button>
 			</div>
 		</form>

@@ -1,6 +1,7 @@
 import { endpoints } from './config';
 
 export const authorize = async (data) => {
+	//console.log(data);
 	try {
 		const response = await fetch(endpoints.auth, {
 			method: 'POST',
@@ -8,7 +9,7 @@ export const authorize = async (data) => {
 			body: JSON.stringify(data)
 		});
 		if (response.status !== 200) {
-			throw new Error('Ошибка авторизации');
+			throw new Error(`Ошибка авторизации ${response.status}: ${response.statusText}`);
 		}
 		const result = await response.json();
 		return result;
@@ -70,3 +71,22 @@ export const vote = async (gameId, jwt, usersArray) => {
 		return error;
 	}
 };
+
+export const register = async (data) => {
+	try {
+		const response = await fetch(endpoints.register, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data)
+		});
+		if (response.status !== 200) {
+			throw new Error(`Ошибка регистрации ${response.status}: ${response.statusText}`);
+		}
+		const result = await response.json();
+		return result;
+	} catch (error) {
+		//console.log(error);
+		//return null;
+		return error;
+	}
+}

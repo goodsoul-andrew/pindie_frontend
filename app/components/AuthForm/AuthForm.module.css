@@ -5,8 +5,16 @@
 }
 
 .form__title {
+  background-color: transparent;
   margin-bottom: 24px;
   font-size: 36px;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  border: none;
+}
+
+.form__title:hover {
+  color: yellow;
+  background-color: #000;
 }
 
 .form__fields {

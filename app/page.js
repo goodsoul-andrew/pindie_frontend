@@ -12,22 +12,12 @@ export default function Home() {
 	const newGames = useGetGamesByCategory('new', []);
 	const popularGames = useGetGamesByCategory('popular', []);
 	//console.log(newGames);
-	if (isDataOk(newGames) && isDataOk(popularGames)) {
-		return (
-			<main>
-				<Banner />
-				<CardsListSection type='slider' id='popular' title='Популярные' data={popularGames} />
-				<CardsListSection type='slider' id='new' title='Новинки' data={newGames} />
-				<Promo />
-			</main>
-		);
-	} else {
-		return (
-			<main>
-				<Banner />
-				<Preloader />
-				<Promo />
-			</main>
-		);
-	}
+	return (
+		<main>
+			<Banner />
+			<CardsListSection type='slider' id='popular' title='Популярные' data={popularGames} />
+			<CardsListSection type='slider' id='new' title='Новинки' data={newGames} />
+			<Promo />
+		</main>
+	);
 }

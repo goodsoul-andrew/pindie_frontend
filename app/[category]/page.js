@@ -1,9 +1,7 @@
 'use client';
 import { CardsListSection } from '../components/CardsListSection/CardsListSection';
-import { Promo } from '../components/Promo/Promo';
 import { isDataOk } from '../api/utils';
 import { useGetGamesByCategory } from '../api/hooks';
-import { useEffect, useState } from 'react';
 import { CategoryNotFound } from '../components/GameNotFound/CategoryNotFound';
 import { Preloader } from '@/app/components/Preloader/Preloader';
 
@@ -24,22 +22,19 @@ export default function CategoryPage(props) {
 		return (
 			<main>
 				<CardsListSection id={params.category} title={titles[params.category]} data={games} />
-				<Promo />
 			</main>
 		);
 	} else if (games == null) {
 		return (
 			<main>
 				<Preloader />
-				<Promo />
 			</main>
 		);
 	} else {
-		console.log(games);
+		//console.log(games);
 		return (
 			<main>
 				<CategoryNotFound />
-				<Promo />
 			</main>
 		);
 	}

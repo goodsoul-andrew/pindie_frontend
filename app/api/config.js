@@ -1,7 +1,8 @@
 export const BASE_URL = 'https://api-code-2.practicum-team.ru';
 
 export const endpoints = {
-	games: `${BASE_URL}/games`, 
-	auth: `${BASE_URL}/auth/local`, 
-	user: `${BASE_URL}/users/me`
+	games: `${BASE_URL}/games`,
+	auth: `${BASE_URL}/auth/local`,
+	user: `${BASE_URL}/users/me`,
+	register: `${BASE_URL}/auth/local/register`
 };

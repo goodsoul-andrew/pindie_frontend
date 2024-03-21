@@ -1,5 +1,5 @@
 'use client';
-import { getGameById, getGamesByCategory } from './data-utils';
+import { getGameById, getGamesByCategory, getAllGames } from './data-utils';
 import { useState, useEffect } from 'react';
 
 export const useGetGamesByCategory = (category, triggers) => {
@@ -7,6 +7,19 @@ export const useGetGamesByCategory = (category, triggers) => {
 	useEffect(() => {
 		async function fetchData() {
 			const data = await getGamesByCategory(category);
+			//console.log('response', data);
+			setGames(data);
+		}
+		fetchData();
+	}, [...triggers]);
+	return games;
+};
+
+export const useGetAllGames = (triggers) => {
+	const [games, setGames] = useState(null);
+	useEffect(() => {
+		async function fetchData() {
+			const data = await getAllGames();
 			//console.log('response', data);
 			setGames(data);
 		}
