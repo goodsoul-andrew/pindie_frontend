@@ -1,6 +1,7 @@
 'use client';
 import { getGameById, getGamesByCategory, getAllGames } from './data-utils';
 import { useState, useEffect } from 'react';
+import { isDataOk } from './utils';
 
 export const useGetGamesByCategory = (category, triggers) => {
 	const [games, setGames] = useState(null);

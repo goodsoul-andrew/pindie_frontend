@@ -7,11 +7,13 @@ import { AuthForm } from '../AuthForm/AuthForm';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { usePindieStore } from '@/app/store/app-store';
+import { Redirect } from 'next';
 
 export const Header = () => {
 	const pathname = usePathname();
+	//console.log(pathname, pathname === "/me");
 	const [popupIsOpened, setPopupIsOpened] = useState(false);
-	const authContext = usePindieStore(); 
+	const authContext = usePindieStore();
 	const openPopup = () => {
 		setPopupIsOpened(true);
 	};
@@ -23,6 +25,25 @@ export const Header = () => {
 	const handleLogout = () => {
 		authContext.logout(); // Метод logout из контекста
 	};
+
+	let loginButton = (
+		<button className={Styles['auth__button']} onClick={openPopup}>
+			Войти
+		</button>
+	);
+	if (authContext.isAuth && pathname !== '/me') {
+		loginButton = (
+			<Link className={Styles['auth__button']} href='/me'>
+				Профиль
+			</Link>
+		);
+	} else if (authContext.isAuth && pathname === '/me') {
+		loginButton = (
+			<Link href='/' className={Styles['auth__button']} onClick={handleLogout}>
+				Выйти
+			</Link>
+		);
+	}
 
 	return (
 		<header className={Styles.header}>
@@ -84,18 +105,7 @@ export const Header = () => {
 						</Link>
 					</li>
 				</ul>
-				<div className={Styles['auth']}>
-					{/* Определяем, авторизован ли пользователь */}
-					{authContext.isAuth ? (
-						<button className={Styles['auth__button']} onClick={handleLogout}>
-							Выйти
-						</button>
-					) : (
-						<button className={Styles['auth__button']} onClick={openPopup}>
-							Войти
-						</button>
-					)}
-				</div>
+				<div className={Styles['auth']}>{loginButton}</div>
 			</nav>
 			<Overlay isOpened={popupIsOpened} closeFunction={closePopup} />
 			<Popup isOpened={popupIsOpened} closeFunction={closePopup}>

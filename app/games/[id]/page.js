@@ -16,26 +16,30 @@ export default function GamePage(props) {
 	const [isVoted, setIsVoted] = useState(false);
 	const authContext = usePindieStore();
 	const currentUser = authContext.user;
+	//console.log(params.id)
 	game = useGetGameById(params.id, [currentUser]);
 	//console.log("GAME GOT", game instanceof Error, isResponseOk(game), game);
+	//console.log(game)
 
 	const handleVote = async () => {
+		//console.log(game);
 		const jwt = authContext.token;
-		let usersIdArray = game.users.length ? game.users.map((user) => user.id) : [];
-		usersIdArray.push(currentUser.id);
-		const response = await vote(game.id, jwt, usersIdArray);
+		let usersArray = game.users.length ? game.users : [];
+		usersArray.push(currentUser);
+		const response = await vote(game._id, jwt, usersArray);
 		if (isResponseOk(response)) {
 			setIsVoted(true);
 			let currGame = game;
-			currGame.users.push(currentUser);
+			//currGame.users.push(currentUser);
 			setGame(currGame);
 		}
 	};
 
 	useEffect(() => {
-		if (currentUser && game) {
-			setIsVoted(checkIfUserVoted(game, currentUser.id));
+		if (currentUser && isDataOk(game)) {
+			setIsVoted(checkIfUserVoted(game, currentUser._id));
 		} else {
+			//console.log("?????")
 			setIsVoted(false);
 		}
 	}, [currentUser, game]);
@@ -44,7 +48,7 @@ export default function GamePage(props) {
 	//console.log(game);
 
 	if (isDataOk(game)) {
-		//console.log('GAME: ', game, isResponseOk(game));
+		console.log('GAME: ', game, isResponseOk(game));
 		return (
 			<main className='main'>
 				<section className={Styles['game']}>

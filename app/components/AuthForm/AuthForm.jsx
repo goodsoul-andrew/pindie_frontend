@@ -7,12 +7,12 @@ import { isResponseOk } from '@/app/api/utils';
 // Есть регистрация!
 
 export const AuthForm = (props) => {
-	const [authData, setAuthData] = useState({ identifier: '', password: '' });
-	const [registerData, setRegisterData] = useState({ identifier: '', password: '', username: "", password_control: "" }); // email это identifier
+	const [authData, setAuthData] = useState({ email: '', password: '' });
+	const [registerData, setRegisterData] = useState({ email: '', password: '', username: '', password_control: '' }); // email это email
 	const authContext = usePindieStore();
 	//const [userData, setUserData] = useState(null);
 	const [message, setMessage] = useState({ status: null, text: null });
-	const [actionType, setActionType] = useState("login");
+	const [actionType, setActionType] = useState('login');
 	const titleLabels = { login: 'Авторизация', register: 'Регистрация' };
 	const actionLabels = { login: 'Войти', register: 'Зарегистрироваться' };
 	const [formTitle, setFormTitle] = useState(titleLabels[actionType]);
@@ -31,60 +31,58 @@ export const AuthForm = (props) => {
 		setAuthData(newRegisterData);
 	};
 
-
 	const handleTitleMouseEnter = (e) => {
-		if (actionType === "login") {
-			setFormTitle(titleLabels["register"]);
+		if (actionType === 'login') {
+			setFormTitle(titleLabels['register']);
+		} else {
+			setFormTitle(titleLabels['login']);
 		}
-		else {
-			setFormTitle(titleLabels["login"]);
-		}
-	}
-	
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (actionType === "login") {
-			const userData = await authorize({identifier: authData.identifier, password: authData.password});
+		if (actionType === 'login') {
+			const userData = await authorize({ email: authData.email, password: authData.password });
 			if (isResponseOk(userData)) {
 				authContext.login(userData.user, userData.jwt); // login из контекста
 				setMessage({ status: 'success', text: 'Вы авторизовались!' });
 			} else {
 				setMessage({ status: 'error', text: 'Неверные почта или пароль' });
 			}
-		}
-		else {
+		} else {
 			if (registerData.password === registerData.password_control) {
-				const registerResponse = await register({email: registerData.identifier, username: registerData.username, password: registerData.password})
+				const registerResponse = await register({
+					email: registerData.email,
+					username: registerData.username,
+					password: registerData.password
+				});
 				if (isResponseOk(registerResponse)) {
-					const userData = await authorize({ identifier: authData.identifier, password: authData.password });
+					const userData = await authorize({ email: authData.email, password: authData.password });
 					if (isResponseOk(userData)) {
 						authContext.login(userData.user, userData.jwt); // login из контекста
 						setMessage({ status: 'success', text: 'Вы зарегистрировались и авторизовались!' });
-						setActionType("login");
+						setActionType('login');
 					} else {
 						setMessage({ status: 'error', text: 'Неверные почта или имя пользователя' });
 					}
-				}
-				else {
-					console.log(registerResponse);
+				} else {
+					//console.log(registerResponse);
 					setMessage({ status: 'error', text: 'Неверные почта или имя пользователя' });
 				}
-			}
-			else {
+			} else {
 				setMessage({ status: 'error', text: 'Пароли не совпадают' });
 			}
 		}
-	}; 
+	};
 
 	const handleActionTypeButton = (e) => {
 		e.preventDefault();
-		if (actionType === "login") {
-			setActionType("register");
+		if (actionType === 'login') {
+			setActionType('register');
+		} else {
+			setActionType('login');
 		}
-		else {
-			setActionType("login");
-		}
-	}
+	};
 
 	useEffect(() => {
 		let timer;
@@ -115,7 +113,7 @@ export const AuthForm = (props) => {
 					<input
 						className={Styles['form__field-input']}
 						type='email'
-						name='identifier'
+						name='email'
 						placeholder='hello@world.com'
 						onInput={(handleAuthInput, handleRegisterInput)}
 					/>

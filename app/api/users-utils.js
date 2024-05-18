@@ -22,6 +22,7 @@ export const authorize = async (data) => {
 
 export const getMe = async (jwt) => {
 	try {
+		//console.log("getMe")
 		const response = await fetch(endpoints.user, {
 			method: 'GET',
 			headers: { Authorization: `Bearer ${jwt}` }
@@ -49,20 +50,22 @@ export const removeJWT = () => {
 };
 
 export const checkIfUserVoted = (game, userId) => {
-	return game.users.find((user) => user.id === userId);
+	console.log("AAA", game, userId)
+	return game.users.find((user) => {return user._id === userId});
 };
 
 export const vote = async (gameId, jwt, usersArray) => {
 	try {
-		const response = await fetch(`${endpoints.games}/${gameId}`, {
+		const response = await fetch(`${endpoints.vote}/${gameId}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${jwt}`
+				"Authorization": `Bearer ${jwt}`,
 			},
-			body: JSON.stringify({ users_permissions_users: usersArray })
+			body: JSON.stringify({ users: usersArray })
 		});
 		if (response.status !== 200) {
+			//console.log(response)
 			throw new Error('Ошибка голосования');
 		}
 		const result = await response.json();
@@ -74,12 +77,14 @@ export const vote = async (gameId, jwt, usersArray) => {
 
 export const register = async (data) => {
 	try {
+		//console.log(data);
 		const response = await fetch(endpoints.register, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(data)
 		});
 		if (response.status !== 200) {
+			//console.log(response);
 			throw new Error(`Ошибка регистрации ${response.status}: ${response.statusText}`);
 		}
 		const result = await response.json();
@@ -89,4 +94,4 @@ export const register = async (data) => {
 		//return null;
 		return error;
 	}
-}
+};

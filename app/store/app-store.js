@@ -18,6 +18,7 @@ export const usePindieStore = create((set) => ({
 		if (jwt) {
 			const user = await getMe(jwt);
 			if (user) {
+				//console.log(user);
 				set({ isAuth: true, user, token: jwt });
 				setJWT(jwt);
 			} else {

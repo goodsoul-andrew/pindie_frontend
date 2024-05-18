@@ -3,7 +3,7 @@ export const isResponseOk = (response) => {
 };
 
 export const isDataOk = (data) => {
-	return !(data instanceof Error || data === null || data.length === 0);
+	return !(data instanceof Error || data === null || data === undefined);
 };
 
 export const getData = async (url) => {
