@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:3105';
+export const BASE_URL = 'http://pindie.good-backend.nomoredomainswork.ru';
 
 export const endpoints = {
 	games: `${BASE_URL}/api/games`,
