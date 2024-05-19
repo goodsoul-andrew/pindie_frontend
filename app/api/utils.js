@@ -10,7 +10,7 @@ export const getData = async (url) => {
 	try {
 		const response = await fetch(url);
 		if (response.status !== 200) {
-			throw new Error('Ошибка получения данных');
+			throw new Error(`Ошибка получения данных ${response.status}: ${response.statusText}`);
 		}
 		const data = await response.json();
 		return data;

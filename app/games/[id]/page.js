@@ -48,7 +48,7 @@ export default function GamePage(props) {
 	//console.log(game);
 
 	if (isDataOk(game)) {
-		console.log('GAME: ', game, isResponseOk(game));
+		//console.log('GAME: ', game, isResponseOk(game));
 		return (
 			<main className='main'>
 				<section className={Styles['game']}>

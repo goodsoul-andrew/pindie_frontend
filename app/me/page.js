@@ -11,9 +11,7 @@ export default function MyProfilePage(props) {
 	const authContext = usePindieStore();
 	const user = authContext.user;
 	const games = useGetAllGames([user]);
-	//console.log(user);
 	if (isDataOk(user)) {
-		//console.log(user);
 		let myGames = null;
 		if (isDataOk(games)) {
 			myGames = games.filter((game) => {

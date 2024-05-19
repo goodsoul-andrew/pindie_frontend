@@ -45,6 +45,7 @@ export const AuthForm = (props) => {
 			const userData = await authorize({ email: authData.email, password: authData.password });
 			if (isResponseOk(userData)) {
 				authContext.login(userData.user, userData.jwt); // login из контекста
+				authContext.checkAuth();
 				setMessage({ status: 'success', text: 'Вы авторизовались!' });
 			} else {
 				setMessage({ status: 'error', text: 'Неверные почта или пароль' });
@@ -94,6 +95,13 @@ export const AuthForm = (props) => {
 		return () => clearTimeout(timer);
 	}, [authContext.user]);
 
+	useEffect(() => {
+		if (!authContext.user) {
+			setMessage({ status: null, text: null });
+		}
+	}, [authContext.user]);
+
+	//console.log(message, authContext.isAuth);
 	return (
 		<form className={Styles['form']} onSubmit={handleSubmit}>
 			<button

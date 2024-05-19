@@ -28,7 +28,7 @@ export const getMe = async (jwt) => {
 			headers: { Authorization: `Bearer ${jwt}` }
 		});
 		if (response.status !== 200) {
-			throw new Error('Ошибка получения данных');
+			throw new Error(`Ошибка получения данных ${response.status}: ${response.statusText}`);
 		}
 		const result = await response.json();
 		return result;
@@ -50,8 +50,10 @@ export const removeJWT = () => {
 };
 
 export const checkIfUserVoted = (game, userId) => {
-	console.log("AAA", game, userId)
-	return game.users.find((user) => {return user._id === userId});
+	//console.log("AAA", game, userId)
+	return game.users.find((user) => {
+		return user._id === userId;
+	});
 };
 
 export const vote = async (gameId, jwt, usersArray) => {
@@ -60,13 +62,13 @@ export const vote = async (gameId, jwt, usersArray) => {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
-				"Authorization": `Bearer ${jwt}`,
+				Authorization: `Bearer ${jwt}`
 			},
 			body: JSON.stringify({ users: usersArray })
 		});
 		if (response.status !== 200) {
 			//console.log(response)
-			throw new Error('Ошибка голосования');
+			throw new Error(`Ошибка голосования ${response.status}: ${response.statusText}`);
 		}
 		const result = await response.json();
 		return result;
