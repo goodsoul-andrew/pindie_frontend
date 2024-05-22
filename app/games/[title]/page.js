@@ -5,7 +5,7 @@ import { Preloader } from '@/app/components/Preloader/Preloader';
 import { GameNotFound } from '@/app/components/GameNotFound/GameNotFound';
 import { isResponseOk, isDataOk } from '@/app/api/utils';
 import { checkIfUserVoted, vote } from '@/app/api/users-utils';
-import { useGetGameById } from '@/app/api/hooks';
+import { useGetGameById, useGetGameByTitle } from '@/app/api/hooks';
 
 import Styles from '../Game.module.css';
 
@@ -17,7 +17,8 @@ export default function GamePage(props) {
 	const authContext = usePindieStore();
 	const currentUser = authContext.user;
 	//console.log(params.id)
-	game = useGetGameById(params.id, [currentUser]);
+	//game = useGetGameById(params.id, [currentUser]);
+	game = useGetGameByTitle(params.title, [currentUser]);
 	//console.log("GAME GOT", game instanceof Error, isResponseOk(game), game);
 	//console.log(game)
 

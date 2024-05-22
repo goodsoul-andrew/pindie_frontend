@@ -13,6 +13,13 @@ export const getGameById = async (id) => {
 	return data;
 };
 
+export const getGameByTitle = async(title) => {
+	let data = await getData(`${endpoints.games}/?title=${title}`);
+	console.log(`${endpoints.games}/?title=${title}`);
+	console.log("data",data[0]);
+	return data[0];
+}
+
 export const getGamesByCategory = async (category) => {
 	let data = await getData(`${endpoints.games}?categories.name=${category}`);
 	//console.log("sdfhlksehfisuhflishf")

@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const Card = (props) => {
 	//console.log(props)
 	return (
-		<Link href={`/games/${props._id}`} className={Styles['card__list__link']} id={props._id}>
+		<Link href={`/games/${props.title}`} className={Styles['card__list__link']} id={props._id}>
 			<article className={Styles.card}>
 				<img src={props.image} alt='' className={Styles.card__image} />
 				<div className={Styles.card__content__block}>
