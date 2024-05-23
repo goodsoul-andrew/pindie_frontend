@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { isDataOk } from '../api/utils';
 import { setJWT, getJWT, removeJWT, getMe } from '../api/users-utils';
 
 export const usePindieStore = create((set) => ({
@@ -18,7 +19,7 @@ export const usePindieStore = create((set) => ({
 		//console.log("jwt", jwt);
 		if (jwt) {
 			const user = await getMe(jwt);
-			if (user) {
+			if (isDataOk(user)) {
 				//console.log("user", user);
 				set({ isAuth: true, user, token: jwt });
 				setJWT(jwt);
